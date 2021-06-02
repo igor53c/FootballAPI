@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "152537983290",
+    "project_id": "footballapi-ffc0e",
+    "storage_bucket": "footballapi-ffc0e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152537983290:android:c7a4fcea042a583060c803",
+        "android_client_info": {
+          "package_name": "glavni.paket.footballapi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152537983290-og3la75svmo92i1553d4i6ks434c43l7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd4E8xbiMm72Dc5kDGKJ6Ko7h330U0W1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152537983290-og3la75svmo92i1553d4i6ks434c43l7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
