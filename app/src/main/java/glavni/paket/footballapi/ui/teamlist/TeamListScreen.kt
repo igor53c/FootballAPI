@@ -1,6 +1,5 @@
 package glavni.paket.footballapi.ui.teamlist
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,28 +14,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.coil.rememberCoilPainter
-import glavni.paket.footballapi.R
 import glavni.paket.footballapi.data.api.remote.responses.TeamDto
 import glavni.paket.footballapi.data.api.remote.responses.TeamListDto
-import glavni.paket.footballapi.ui.game.GameScreen
 import glavni.paket.footballapi.ui.theme.RobotoCondensed
 import glavni.paket.footballapi.util.Resource
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun TeamListScreen(

@@ -1,17 +1,19 @@
 package glavni.paket.footballapi.ui.start
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import glavni.paket.footballapi.R
+import glavni.paket.footballapi.data.Tactics
 import glavni.paket.footballapi.data.api.remote.responses.TeamDto
 import glavni.paket.footballapi.ui.team.TeamDetailViewModel
 import glavni.paket.footballapi.ui.teamlist.TeamEntry
@@ -34,7 +37,7 @@ fun StartScreen(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ){
         var name by remember { mutableStateOf(viewModel.myPreference.getName()) }
         var errorSate by remember { mutableStateOf(false) }
@@ -183,6 +186,57 @@ fun StartScreen(
                     )
                 }
             }
+        }
+        Text(
+            text = "Select tactic:",
+            fontSize = 20.sp,
+            modifier = Modifier
+                .padding(start = 8.dp, top = 8.dp)
+        )
+        val tactics = remember { Tactics.tactics }
+        var selectedTactic by remember { mutableStateOf(viewModel.myPreference.getSelectedTactic()) }
+        LazyRow(
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+        ) {
+            items(
+                count = tactics.size,
+                itemContent = {
+                    Card(
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(100.dp, 50.dp)
+                            .align(alignment = Alignment.CenterHorizontally)
+                            .border(
+                                width = 1.dp,
+                                shape = RoundedCornerShape(10.dp),
+                                color = MaterialTheme.colors.primary
+                            )
+                            .clickable {
+                                selectedTactic = it
+                                viewModel.myPreference.setSelectedTactic(it)
+                            }
+                    ) {
+                        var color = Color.White
+                        if(selectedTactic == it) color = MaterialTheme.colors.primary
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .background(color = color)
+                        ) {
+                            Text(text = tactics.get(it), fontSize = 20.sp)
+                        }
+                    }
+                }
+            )
+        }
+        Button(
+            onClick = {  },
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "searching for an opponent")
         }
     }
 }

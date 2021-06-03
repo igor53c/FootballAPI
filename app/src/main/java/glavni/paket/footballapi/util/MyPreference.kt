@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import glavni.paket.footballapi.util.Constants.SHARED_PREFERENCES_KEY_CLUB_ID
 import glavni.paket.footballapi.util.Constants.SHARED_PREFERENCES_KEY_NAME
+import glavni.paket.footballapi.util.Constants.SHARED_PREFERENCES_KEY_SELECTED_TACTIC
 import glavni.paket.footballapi.util.Constants.SHARED_PREFERENCES_PREFIX
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,5 +25,11 @@ class MyPreference @Inject constructor(@ApplicationContext context : Context) {
     }
     fun setClubId(id: Int) {
         sharedPref.edit().putInt(SHARED_PREFERENCES_KEY_CLUB_ID, id).apply()
+    }
+    fun getSelectedTactic(): Int {
+        return sharedPref.getInt(SHARED_PREFERENCES_KEY_SELECTED_TACTIC, 0)
+    }
+    fun setSelectedTactic(number: Int) {
+        sharedPref.edit().putInt(SHARED_PREFERENCES_KEY_SELECTED_TACTIC, number).apply()
     }
 }

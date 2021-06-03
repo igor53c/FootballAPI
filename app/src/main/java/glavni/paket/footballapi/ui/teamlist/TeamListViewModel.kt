@@ -27,34 +27,6 @@ class TeamListViewModel @Inject constructor(
         return repository.getTeamList(leagueId)
     }
 
-    var teamList = mutableStateOf<List<TeamDto>>(listOf())
-    var loadError = mutableStateOf("")
-    var isLoading = mutableStateOf(false)
-
-    init {
-        loadTeamPaginated(2002)
-    }
-
-    fun loadTeamPaginated(leagueId: Int?) {
-        viewModelScope.launch {
-            isLoading.value = true
-            val results = repository.getTeamList(leagueId)
-            when(results) {
-                is Resource.Success -> {
-                    loadError.value = ""
-                    isLoading.value = false
-                    if(results.data != null) {
-                        teamList.value = results.data.teams
-                    }
-                }
-                is Resource.Error -> {
-                    loadError.value = results.message!!
-                    isLoading.value = false
-                }
-            }
-        }
-    }
-
     fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
         val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
 

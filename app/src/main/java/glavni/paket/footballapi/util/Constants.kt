@@ -9,4 +9,5 @@ object Constants {
     const val SHARED_PREFERENCES_PREFIX = "SharedPreferencesPrefix"
     const val SHARED_PREFERENCES_KEY_NAME = "Name"
     const val SHARED_PREFERENCES_KEY_CLUB_ID = "ClubId"
+    const val SHARED_PREFERENCES_KEY_SELECTED_TACTIC = "SelectedTactic"
 }
