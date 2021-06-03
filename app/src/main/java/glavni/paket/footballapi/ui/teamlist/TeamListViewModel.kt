@@ -12,14 +12,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import glavni.paket.footballapi.data.api.remote.responses.TeamDto
 import glavni.paket.footballapi.data.api.remote.responses.TeamListDto
 import glavni.paket.footballapi.repository.TeamRepository
+import glavni.paket.footballapi.util.MyPreference
 import glavni.paket.footballapi.util.Resource
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TeamListViewModel @Inject constructor(
-    private val repository: TeamRepository
+    private val repository: TeamRepository,
+    val myPreference: MyPreference
 ) : ViewModel() {
+
+    suspend fun getTeamList(leagueId: Int?): Resource<TeamListDto> {
+        return repository.getTeamList(leagueId)
+    }
 
     var teamList = mutableStateOf<List<TeamDto>>(listOf())
     var loadError = mutableStateOf("")
@@ -27,10 +33,6 @@ class TeamListViewModel @Inject constructor(
 
     init {
         loadTeamPaginated(2002)
-    }
-
-    suspend fun getTeamList(leagueId: Int?): Resource<TeamListDto> {
-        return repository.getTeamList(leagueId)
     }
 
     fun loadTeamPaginated(leagueId: Int?) {

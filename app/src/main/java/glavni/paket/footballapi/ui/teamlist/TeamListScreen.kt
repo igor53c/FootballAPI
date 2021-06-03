@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.ImageLoader
@@ -34,14 +35,14 @@ import glavni.paket.footballapi.data.api.remote.responses.TeamListDto
 import glavni.paket.footballapi.ui.game.GameScreen
 import glavni.paket.footballapi.ui.theme.RobotoCondensed
 import glavni.paket.footballapi.util.Resource
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-@ExperimentalFoundationApi
 @Composable
 fun TeamListScreen(
     leagueId: Int?,
     navController: NavController
 ) {
-
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
@@ -58,25 +59,22 @@ fun TeamList(
     navController: NavController,
     viewModel: TeamListViewModel = hiltNavGraphViewModel()
 ) {
-    val teamInfo = produceState<Resource<TeamListDto>>(initialValue = Resource.Loading()) {
+    val teamList = produceState<Resource<TeamListDto>>(initialValue = Resource.Loading()) {
         value = viewModel.getTeamList(leagueId!!)
     }.value
 
-    val teamList by remember { viewModel.teamList }
-    val loadError by remember { viewModel.loadError }
-    val isLoading by remember { viewModel.isLoading }
-
-    LazyColumn(contentPadding = PaddingValues(16.dp)) {
-        val itemCount = if(teamList.size % 2 == 0) {
-            teamList.size / 2
-        } else {
-            teamList.size / 2 + 1
-        }
-        items(itemCount) {
-            if(it >= itemCount && !isLoading) {
-                viewModel.loadTeamPaginated(leagueId)
+    if(teamList is Resource.Success) {
+        LazyColumn(contentPadding = PaddingValues(16.dp)) {
+            if(teamList.data != null) {
+                val itemCount = if(teamList.data.teams.size % 2 == 0) {
+                    teamList.data.teams.size / 2
+                } else {
+                    teamList.data.teams.size / 2 + 1
+                }
+                items(itemCount) {
+                    TeamRow(rowIndex = it, entries = teamList.data.teams, navController = navController)
+                }
             }
-            TeamRow(rowIndex = it, entries = teamList, navController = navController)
         }
     }
 
@@ -84,30 +82,26 @@ fun TeamList(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        if(isLoading) {
+        if(teamList is Resource.Loading) {
             CircularProgressIndicator(color = MaterialTheme.colors.primary)
         }
-        if(loadError.isNotEmpty()) {
-            RetrySection(error = loadError) {
-                viewModel.loadTeamPaginated(leagueId)
+        if(teamList is Resource.Error) {
+            if(teamList.message != null) {
+                Text(teamList.message, color = Color.Red, fontSize = 18.sp)
             }
         }
     }
-
 }
 
 @Composable
 fun TeamEntry(
     entry: TeamDto,
     navController: NavController,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     viewModel: TeamListViewModel = hiltNavGraphViewModel()
 ) {
     val defaultDominantColor = MaterialTheme.colors.surface
-    var dominantColor by remember {
-        mutableStateOf(defaultDominantColor)
-    }
-
+    var dominantColor by remember { mutableStateOf(defaultDominantColor) }
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -123,8 +117,9 @@ fun TeamEntry(
                 )
             )
             .clickable {
+                viewModel.myPreference.setClubId(entry.id)
                 navController.navigate(
-                    "team_detail_screen/${dominantColor.toArgb()}/${entry.id}"
+                    "start_screen"
                 )
             }
             .padding(top = 8.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
@@ -189,22 +184,5 @@ fun TeamRow(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
-@Composable
-fun RetrySection(
-    error: String,
-    onRetry: () -> Unit
-) {
-    Column {
-        Text(error, color = Color.Red, fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = { onRetry() },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "Retry")
-        }
     }
 }
