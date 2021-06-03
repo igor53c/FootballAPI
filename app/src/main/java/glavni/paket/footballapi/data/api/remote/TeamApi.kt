@@ -15,9 +15,10 @@ interface TeamApi {
         @Path("id") id: String
     ): TeamDto
 
-    @GET("competitions/2002/teams")
+    @GET("competitions/{id}/teams")
     suspend fun getTeamList(
         @Header("X-Auth-Token") token: String = TOKEN,
+        @Path("id") id: String
     ): TeamListDto
 }
 

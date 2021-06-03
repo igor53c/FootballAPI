@@ -13,6 +13,7 @@ import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import glavni.paket.footballapi.ui.game.GameScreen
+import glavni.paket.footballapi.ui.start.StartScreen
 import glavni.paket.footballapi.ui.team.TeamDetailScreen
 import glavni.paket.footballapi.ui.teamlist.TeamListScreen
 import glavni.paket.footballapi.ui.theme.FootballAPITheme
@@ -27,10 +28,26 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = "game_screen"
+                    startDestination = "start_screen"
                 ) {
-                    composable("team_list_screen") {
-                        TeamListScreen(navController = navController)
+                    composable("start_screen") {
+                        StartScreen(navController = navController)
+                    }
+                    composable(
+                        "team_list_screen/{leagueId}",
+                        arguments = listOf(
+                            navArgument("leagueId") {
+                                type = NavType.IntType
+                            }
+                        )
+                    ) {
+                        val leagueId = remember {
+                            it.arguments?.getInt("leagueId")
+                        }
+                        TeamListScreen(
+                            leagueId = leagueId,
+                            navController = navController
+                        )
                     }
                     composable("game_screen") {
                         GameScreen(navController = navController)

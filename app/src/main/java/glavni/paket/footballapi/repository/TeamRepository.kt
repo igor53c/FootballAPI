@@ -16,9 +16,9 @@ class TeamRepository @Inject constructor(
     private val api: TeamApi
 ) {
 
-    suspend fun getTeamList(): Resource<TeamListDto> {
+    suspend fun getTeamList(leagueId: Int?): Resource<TeamListDto> {
         val response = try {
-            api.getTeamList()
+            api.getTeamList(id = leagueId.toString())
         } catch(e: Exception) {
             return Resource.Error("An unknown error occured.")
         }

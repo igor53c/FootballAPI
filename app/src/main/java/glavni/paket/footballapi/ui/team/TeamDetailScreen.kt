@@ -83,7 +83,8 @@ fun TeamDetailScreen(
         )
         Box(contentAlignment = Alignment.TopCenter,
             modifier = Modifier
-                .fillMaxSize()) {
+                .fillMaxSize()
+        ) {
             if(teamInfo is Resource.Success) {
                 teamInfo.data?.crestUrl?.let {
                     Image(

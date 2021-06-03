@@ -30,40 +30,38 @@ import coil.request.ImageRequest
 import com.google.accompanist.coil.rememberCoilPainter
 import glavni.paket.footballapi.R
 import glavni.paket.footballapi.data.api.remote.responses.TeamDto
+import glavni.paket.footballapi.data.api.remote.responses.TeamListDto
 import glavni.paket.footballapi.ui.game.GameScreen
 import glavni.paket.footballapi.ui.theme.RobotoCondensed
+import glavni.paket.footballapi.util.Resource
 
 @ExperimentalFoundationApi
 @Composable
 fun TeamListScreen(
+    leagueId: Int?,
     navController: NavController
 ) {
+
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
-            Spacer(modifier = Modifier.height(20.dp))
-            Image(
-                painter = painterResource(id = R.drawable.bundesliga_logo),
-                contentDescription = "BundesLiga",
-                modifier = Modifier
-                    .fillMaxHeight(.2f)
-                    .align(Alignment.CenterHorizontally)
-                    .clickable {
-                        navController.navigate("game_screen")
-                    }
-            )
-            TeamList(navController = navController)
+            TeamList(leagueId = leagueId, navController = navController)
         }
     }
 }
 
 @Composable
 fun TeamList(
+    leagueId: Int?,
     navController: NavController,
     viewModel: TeamListViewModel = hiltNavGraphViewModel()
 ) {
+    val teamInfo = produceState<Resource<TeamListDto>>(initialValue = Resource.Loading()) {
+        value = viewModel.getTeamList(leagueId!!)
+    }.value
+
     val teamList by remember { viewModel.teamList }
     val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
@@ -76,7 +74,7 @@ fun TeamList(
         }
         items(itemCount) {
             if(it >= itemCount && !isLoading) {
-                viewModel.loadTeamPaginated()
+                viewModel.loadTeamPaginated(leagueId)
             }
             TeamRow(rowIndex = it, entries = teamList, navController = navController)
         }
@@ -91,7 +89,7 @@ fun TeamList(
         }
         if(loadError.isNotEmpty()) {
             RetrySection(error = loadError) {
-                viewModel.loadTeamPaginated()
+                viewModel.loadTeamPaginated(leagueId)
             }
         }
     }

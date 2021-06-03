@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
 import dagger.hilt.android.lifecycle.HiltViewModel
 import glavni.paket.footballapi.data.api.remote.responses.TeamDto
+import glavni.paket.footballapi.data.api.remote.responses.TeamListDto
 import glavni.paket.footballapi.repository.TeamRepository
 import glavni.paket.footballapi.util.Resource
 import kotlinx.coroutines.launch
@@ -25,13 +26,17 @@ class TeamListViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
 
     init {
-        loadTeamPaginated()
+        loadTeamPaginated(2002)
     }
 
-    fun loadTeamPaginated() {
+    suspend fun getTeamList(leagueId: Int?): Resource<TeamListDto> {
+        return repository.getTeamList(leagueId)
+    }
+
+    fun loadTeamPaginated(leagueId: Int?) {
         viewModelScope.launch {
             isLoading.value = true
-            val results = repository.getTeamList()
+            val results = repository.getTeamList(leagueId)
             when(results) {
                 is Resource.Success -> {
                     loadError.value = ""
